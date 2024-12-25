@@ -12,15 +12,16 @@ import java.util.Date;
 import java.math.BigDecimal;
 
 @Entity
-@Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+@Data
 public class Product {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
     private String name;
-    private String description;
+    private String desc;
     private String brand;
     private BigDecimal price;
     private String category;
