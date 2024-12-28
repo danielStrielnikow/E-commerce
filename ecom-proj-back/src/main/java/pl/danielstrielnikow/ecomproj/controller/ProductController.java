@@ -64,17 +64,22 @@ public class ProductController {
                                                 @RequestPart Product product,
                                                 @RequestPart MultipartFile imageFile) {
         try {
-            Product product1 = service.updateProduct(id, product, imageFile);
-        } catch (IOException e) {
-            return new ResponseEntity<>("Failed to Update", HttpStatus.BAD_REQUEST);
-        }
+            boolean exists = service.existsById(id);
+            if (!exists){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product with ID " + id + " not found");
+            }
+            Product updatedProduct = service.updateProduct(id, product, imageFile);
 
-        if (product != null) {
-            return new ResponseEntity<>("Updated", HttpStatus.OK);
-        }else {
-            return new ResponseEntity<>("Failed to Update", HttpStatus.BAD_REQUEST);
+            if (updatedProduct != null) {
+                return ResponseEntity.ok("Product updated successfully");
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to update the product");
+            }
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while updating the product: " + e.getMessage());
         }
     }
+
 
     @DeleteMapping("/product/{id}")
     public ResponseEntity<String> deleteProduct(@PathVariable int id) {
@@ -85,5 +90,11 @@ public class ProductController {
         } else {
             return new ResponseEntity<>("Product not found", HttpStatus.NOT_FOUND);
         }
+    }
+
+    @GetMapping("products/search")
+    public ResponseEntity<List<Product>> searchProducts(@RequestParam String keyword) {
+        List<Product> products = service.searchProducts(keyword);
+        return new ResponseEntity<>(products, HttpStatus.OK);
     }
 }

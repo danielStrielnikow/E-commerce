@@ -43,4 +43,12 @@ public class ProductService {
     public void deleteProduct(int id) {
         repo.deleteById(id);
     }
+
+    public boolean existsById(int id) {
+        return repo.existsById(id);
+    }
+
+    public List<Product> searchProducts(String keyword) {
+        return repo.searchProducts(keyword);
+    }
 }
